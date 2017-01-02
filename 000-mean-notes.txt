@@ -1,0 +1,102 @@
+#安装Express Generator
+Express Generator是一个用来搭建应用的Node模块。为了安装Express Generator，我们需要打开另一个Mac的终端或者windows的命令提示窗口，
+然后执行：
+npm install -g express-generator
+
+#搭建一个项目
+所有的工具都已经安装完毕。现在让我用Express Generator搭建一个框架。我们将开发一个适用于录像租赁店的叫Vidzy的应用。打开终端窗口，选择一个合适的目录来创建项目：
+express Vidzy
+
+ Vidzy
+ Vidzy/package.json
+ Vidzy/app.js
+ Vidzy/public/javascripts
+ Vidzy/public/images
+ Vidzy/public/stylesheets
+ Vidzy/public/stylesheets/style.css
+ Vidzy/public
+ Vidzy/routes
+ Vidzy/routes/index.js
+ Vidzy/routes/users.js
+ Vidzy/views
+ Vidzy/views/index.jade
+ Vidzy/views/layout.jade
+ Vidzy/views/error.jade
+ Vidzy/bin
+ Vidzy/bin/www
+
+install dependencies:
+   > cd Vidzy && npm install
+
+run the app:
+   > SET DEBUG=vidzy:* & npm start
+
+#安装依赖模块
+当你通过Express Generator生成一个应用时，这些依赖模块并没有被安装。它们只是在package.json文件中进行了配置。你需要单独安装这些依赖。
+来安装这些依赖，首先返回到控制台并且输入命令：
+cd Vidzy
+npm install
+
+#安装Nodemon
+当你启动Node应用的时候，一个用来接收请求的最基本的web服务器就在3000端口上启动了。如果你修改了代码，这些改变将不会生效直到你重启了服务器。频繁的重启服务器来使代码生效是一件蛋疼的事情。为了解决这个问题，我们使用 Nodemon，这个模块在检测到源文件修改时自动重启web服务器。
+安装Nodemon：
+npm install nodemon -g
+
+#安装Monk
+Monk是一个用来读写MongoDB的Node模块。
+安装monk：
+npm install monk --save
+
+#运行应用
+太棒了！我们已经安装了所有需要的工具。现在是时候来运行应用了。从控制台进入Vidzy目录输入以下命令：
+nodemon
+Nodemon将在3000端口上启动你的web服务器。你可能会看到一个弹出窗口显示Node正在侦听连接。
+现在启动你的浏览器跳转到
+http://localhost:3000
+这就是你的第一个express应用。
+
+测试数据：
+use vidzy
+
+ db.videos.insert({ "title" : "Terminator Genisys", "genre" : "SciFi", "description" : "When John Connor, leader of the human resistance, sends Sgt. Kyle Reese back to 1984 to protect Sarah Connor and safeguard the future, an unexpected turn of events creates a fractured timeline." })
+
+ db.videos.insert({ "title" : "The Lord of the Rings", "genre" : "Fantasy", "description" : "A meek hobbit of the Shire and eight companions set out on a journey to Mount Doom to destroy the One Ring and the dark lord Sauron." })
+
+ db.videos.insert({ "title" : "Apollo 13", "genre" : "Drama", "description" : "NASA must devise a strategy to return Apollo 13 to Earth safely after the spacecraft undergoes massive internal damage putting the lives of the three astronauts on board in jeopardy." })
+
+
+现在看一下这个函数体。 res 变量代表了响应对象。这个响应对象自带了一些有用的函数。
+render：用来渲染视图
+send：用来发送文本内容到客户端
+json：发送json对象到客户端
+redirect：重定向客户端到另一个地址
+
+#第3步：添加Angular
+在这一步中，你将学习到Angular的基础知识。如果你已经熟悉Angular，可以跳过这些描述，但是请拷贝这些代码到项目中。
+Angular是一个用来构建单页应用（SPA）的非常流行的前端框架。它提供了路由，依赖注入，测试和MVC的结构实现的代码解耦。如果这些听起来太极客了，也不用担心。这一章将带你了解这些特性。
+
+首先，需要添加Angular脚本到应用中。打开 views>layout.jad 添加以下3个脚本文件引用在 head的末尾（一般考虑性能会放在body标签的末端）。
+script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-resource.js')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-route.js')
+
+这些是什么脚本？第1个是Angular框架的主脚本，第2个是用来调用RESTful APIs，第3个是用来管理路由的。通过路由来定义应用导航对应展示的页面。
+
+在Angular脚本之后，添加 vidzy.js 引用
+ script(src='/javascripts/vidzy.js')
+
+现在主要脚本已经引入，可以添加Angular到我们的应用了。添加Angular包括两步：
+第1步，在HTML元素上添加 ng-app 属性。当Angular脚本加载完时，它将在DOM中找到这个属性然后挂载应用程序。
+第2步，为应用创建一个Angular模块。Angular应用通常由1个或者多个模块构成。这个简单的应用，你只需要一个 app 模块。但是随着应用的扩展，为了提升代码结构和可维护性，你可能需要划分不同的功能到不同的模块。
+
+打开 layout.jade 添加 ng-app 到html元素。
+doctype html
+html(ng-app='Vidzy')
+
+我们给ng-app设置的值就是应用的名称。现在我们需要创建这个模块。
+打开 vidzy.js输入以下代码：
+var app = angular.module('Vidzy', []);
+Angular 现在是一个全局可用的对象， module 方法可以用来定义一个新的模块或者获取已有模块的引用。第1个参数和我们之前在 ng-app 中定义的值一致。第2个参数是一个依赖数组。这里传入一个空数组来声明当前模块不依赖任何其他模块。
+我们做这些就是为了将Angular挂载到我们的应用上。接下来我们将重构首页，使用Angular来展示数据库中所有的视频。
+
+开始的时候，在本章关于“什么时候使用Node”中，我提到一种通用的场景：Node擅长在文档数据库上构建基于RESTful APIs的应用。通过这种架构，我们不必把时间花在数据转换上。我们存储JSON对象在Mongo中，通过RESTful API导出它们并且直接在客户端进行展示（通过Angular）。JSON就是Javascript和MongoDB的原生对像。所以用它来贯穿整个技术栈，我们就减少了匹配和转换数据的工作。通过从API返回JSON对象然后在客户端渲染视图，来提高性能和可扩展性。因为服务器的CPU将不会被浪费在为大量并发用户渲染视图上。另外，我们可以重用同样的API去构建另一个客户端，例如Iphone和Android app。
